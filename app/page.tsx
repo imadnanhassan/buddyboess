@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { HomeSidebar } from '@/components/home/HomeSidebar';
 import { Topbar } from '@/components/home/Topbar';
 import { Composer } from '@/components/home/Composer';
@@ -7,27 +8,26 @@ import { FeedFilters } from '@/components/home/FeedFilters';
 import { PostCard } from '@/components/home/PostCard';
 import { CompleteProfile } from '@/components/home/CompleteProfile';
 import { LatestUpdates } from '@/components/home/LatestUpdates';
+import { useAppDispatch, useAppSelector } from '@/lib/store';
+import { fetchPosts } from '@/lib/slices/feedSlice';
 
 export default function HomePage() {
-  // Mock data using external assets
-  const posts = [
-    {
-      id: '1',
-      author: { name: 'John', avatar: 'https://randomuser.me/api/portraits/men/32.jpg' },
-      timeAgo: '4 years ago',
-      edited: true,
-      visibility: 'Public',
-      media: {
-        type: 'video',
-        src: 'https://cdn.jsdelivr.net/gh/zhazhahui/CDN-assets@main/video/beach.mp4',
-        poster: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&amp;w=1600&amp;auto=format&amp;fit=crop',
-        duration: '0:13',
-      },
-      text: 'Enjoying the beach!',
-      reactions: { likeCount: 2, whoReacted: ['You', 'Jennifer'] },
-      commentsCount: 2,
-    },
-  ];
+  const dispatch = useAppDispatch();
+  const posts = useAppSelector((s) => s.feed.posts);
+  const status = useAppSelector((s) => s.feed.status);
+
+  const [updates, setUpdates] = useState<{ name: string; avatar: string; text: string; time: string }[]>([]);
+
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchPosts());
+    }
+    // Fetch latest updates (mock)
+    fetch('/api/updates')
+      .then((r) => r.json())
+      .then((d) => setUpdates(d.updates))
+      .catch(() => setUpdates([]));
+  }, [dispatch]); // load once
 
   return (
     <div className="min-h-screen bg-neutral-50">
@@ -54,7 +54,7 @@ export default function HomePage() {
           {/* Right rail */}
           <aside className="lg:col-span-3 space-y-6">
             <CompleteProfile />
-            <LatestUpdates />
+            <LatestUpdates updates={updates} />
           </aside>
         </div>
       </div>

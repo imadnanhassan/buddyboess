@@ -1,11 +1,13 @@
 'use client';
-import { useState } from 'react';
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
+import { useAppDispatch, useAppSelector } from '@/lib/store';
+import { setFilter } from '@/lib/slices/feedSlice';
 
 export function FeedFilters() {
   const tags = ['All', 'Announcement', 'Health & Wellness', 'Food & Recipes', 'More'];
-  const [active, setActive] = useState('All');
+  const dispatch = useAppDispatch();
+  const active = useAppSelector((s) => s.feed.activeFilter);
 
   return (
     <div className="rounded-xl border border-neutral-200 bg-white px-4 py-3">
@@ -18,7 +20,7 @@ export function FeedFilters() {
                 key={t}
                 whileHover={{ y: -1 }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => setActive(t)}
+                onClick={() => dispatch(setFilter(t))}
                 className={`relative rounded-lg px-3 py-1 text-sm transition-colors ${
                   isActive ? 'bg-neutral-800 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
                 }`}
