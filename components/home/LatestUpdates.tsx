@@ -1,12 +1,8 @@
 'use client';
 
-export function LatestUpdates() {
-  const updates = [
-    { name: 'John', avatar: 'https://randomuser.me/api/portraits/men/32.jpg', text: 'posted an update', time: '4 years ago' },
-    { name: 'Adele', avatar: 'https://randomuser.me/api/portraits/women/65.jpg', text: 'posted an update', time: '4 years ago' },
-    { name: 'John', avatar: 'https://randomuser.me/api/portraits/men/32.jpg', text: 'posted an update', time: '5 years ago' },
-    { name: 'John', avatar: 'https://randomuser.me/api/portraits/men/32.jpg', text: 'posted an update in the group ☕ Coffee Addicts', time: '5 years ago' },
-  ];
+type Update = { name: string; avatar: string; text: string; time: string };
+
+export function LatestUpdates({ updates }: { updates: Update[] }) {
   return (
     <section className="rounded-xl border border-neutral-200 bg-white p-4">
       <h3 className="text-lg font-semibold text-neutral-800 mb-3">Latest updates</h3>
